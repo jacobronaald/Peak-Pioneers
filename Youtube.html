@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Automation — Peak Pioneers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+            --obsidian: #EAEEF6;
+            --ink: #F2F5FB;
+            --surface: #FFFFFF;
+            --surface-2: #E9EEF6;
+            --line: rgba(12, 18, 34, 0.10);
+            --line-strong: rgba(12, 18, 34, 0.17);
+            --bone: #0C1222;
+            --bone-dim: #49506A;
+            --muted: #858DA3;
+            --azure: #2563EB;
+            --cyan: #0891B2;
+            --purple: #8B5CF6;
+            --red: #EF4444;
+            --gold: #F59E0B;
+            --glass: rgba(255, 255, 255, 0.66);
+            --display: 'Space Grotesk', sans-serif;
+            --giant: 'Archivo Black', sans-serif;
+            --body: 'Inter', sans-serif;
+            --mono: 'Space Mono', monospace;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: var(--obsidian);
+            color: var(--bone);
+            font-family: var(--body);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        ::selection {
+            background: var(--azure);
+            color: #fff;
+        }
+        .wrap {
+            width: min(1280px, 90vw);
+            margin-inline: auto;
+        }
+
+        /* 3D Canvas Background */
+        #canvas-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.35;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(234, 238, 246, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--line);
+            transition: all 0.3s;
+        }
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 0;
+        }
+        .logo {
+            font-family: var(--giant);
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--bone);
+            text-decoration: none;
+        }
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--red), var(--azure));
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            display: inline-block;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .nav-links a {
+            color: var(--bone-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--red);
+        }
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: 0;
+            cursor: pointer;
+        }
+        .burger span {
+            width: 24px;
+            height: 2px;
+            background: var(--bone);
+            transition: 0.3s;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 100px;
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.4s var(--ease);
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--red), var(--azure));
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--line-strong);
+            color: var(--bone);
+        }
+        .btn-outline:hover {
+            border-color: var(--red);
+            background: rgba(239, 68, 68, 0.05);
+        }
+        .btn-youtube {
+            background: #FF0000;
+            color: white;
+        }
+        .btn-youtube:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 0, 0, 0.3);
+        }
+
+        /* Hero with Video Banner */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            position: relative;
+        }
+        .video-banner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            border-radius: 0 0 48px 48px;
+        }
+        .video-banner video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.12;
+        }
+        .video-banner .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--obsidian) 0%, rgba(234, 238, 246, 0.85) 100%);
+        }
+        .hero .wrap {
+            position: relative;
+            z-index: 2;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-family: var(--giant);
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, var(--red), var(--azure), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero .lede {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            color: var(--bone-dim);
+            max-width: 50ch;
+            margin-top: 1.5rem;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            border-left: 2px solid var(--red);
+            padding-left: 1rem;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-family: var(--display);
+            font-weight: 700;
+            color: var(--red);
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 0;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-header .eyebrow {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--red);
+        }
+        .section-header h2 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-family: var(--display);
+            margin-top: 0.8rem;
+        }
+        .section-header p {
+            color: var(--bone-dim);
+            margin-top: 0.4rem;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.5s var(--ease);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(400px circle at var(--x, 50%) var(--y, 0%), rgba(239, 68, 68, 0.08), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--red);
+        }
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(37, 99, 235, 0.1));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+        .feature-card p {
+            color: var(--bone-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Case Studies with YouTube Thumbnails */
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        .case-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s var(--ease);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .case-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--red);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+        .case-thumbnail {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .case-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s var(--ease);
+        }
+        .case-card:hover .case-thumbnail img {
+            transform: scale(1.04);
+        }
+        .case-thumbnail .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            transition: background 0.3s;
+        }
+        .case-card:hover .play-overlay {
+            background: rgba(0, 0, 0, 0.15);
+        }
+        .play-overlay .play-btn {
+            width: 68px;
+            height: 68px;
+            background: rgba(255, 0, 0, 0.85);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--ease);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 32px rgba(255, 0, 0, 0.35);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        .play-overlay .play-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+            margin-left: 4px;
+        }
+        .case-card:hover .play-btn {
+            transform: scale(1.1);
+            background: #ff1a1a;
+            box-shadow: 0 12px 40px rgba(255, 0, 0, 0.5);
+        }
+        .case-thumbnail .channel-badge {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: white;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .channel-badge .yt-icon {
+            display: flex;
+            align-items: center;
+        }
+        .channel-badge .yt-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: #FF0000;
+        }
+        .case-content {
+            padding: 1.5rem;
+        }
+        .case-tag {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--red);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .case-card h3 {
+            font-size: 1.3rem;
+            margin: 0.5rem 0;
+        }
+        .case-card p {
+            color: var(--bone-dim);
+            font-size: 0.9rem;
+        }
+        .case-result {
+            color: var(--red);
+            font-weight: 600;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .subscriber-count {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--azure);
+        }
+        .case-card .watch-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--red);
+            transition: gap 0.3s;
+        }
+        .case-card:hover .watch-link {
+            gap: 0.8rem;
+        }
+        .watch-link .arrow {
+            transition: transform 0.3s;
+        }
+        .case-card:hover .watch-link .arrow {
+            transform: translateX(4px);
+        }
+
+        /* Workflow Diagram */
+        .workflow {
+            background: var(--surface);
+            border-radius: 32px;
+            padding: 3rem;
+            border: 1px solid var(--line);
+        }
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .workflow-step {
+            flex: 1;
+            text-align: center;
+            min-width: 140px;
+        }
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--red), var(--azure));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--display);
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+        .step-arrow {
+            font-size: 2rem;
+            color: var(--muted);
+            font-weight: 300;
+        }
+        @media (max-width: 768px) {
+            .workflow-steps {
+                flex-direction: column;
+            }
+            .step-arrow {
+                transform: rotate(90deg);
+            }
+            .nav-links,
+            .nav .btn {
+                display: none;
+            }
+            .burger {
+                display: flex;
+            }
+        }
+
+        /* Metrics Dashboard */
+        .metrics-dash {
+            background: var(--surface);
+            border-radius: 28px;
+            border: 1px solid var(--line);
+            overflow: hidden;
+        }
+        .dash-header {
+            padding: 1.5rem 2rem;
+            background: rgba(239, 68, 68, 0.05);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .dash-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--red);
+            font-family: var(--mono);
+            font-size: 0.75rem;
+        }
+        .dash-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+            display: inline-block;
+            animation: pulse-dot 1.8s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        .dash-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1px;
+            background: var(--line);
+        }
+        .metric-card {
+            background: var(--surface);
+            padding: 1.8rem;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2.5rem;
+            font-family: var(--display);
+            font-weight: 700;
+            color: var(--red);
+        }
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.3rem;
+        }
+        .trend-up {
+            color: #10b981;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            margin-left: 0.5rem;
+        }
+        .trend-up svg {
+            width: 12px;
+            height: 12px;
+            fill: #10b981;
+        }
+
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .pricing-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            padding: 2rem;
+            transition: all 0.4s var(--ease);
+            position: relative;
+        }
+        .pricing-card.featured {
+            border-color: var(--red);
+            background: linear-gradient(180deg, rgba(239, 68, 68, 0.03), var(--surface));
+        }
+        .pricing-card.featured::before {
+            content: "Most Popular";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--red);
+            color: white;
+            font-size: 0.7rem;
+            font-family: var(--mono);
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            letter-spacing: 0.1em;
+        }
+        .pricing-name {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--red);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        .pricing-price {
+            font-size: 2.5rem;
+            font-family: var(--display);
+            font-weight: 700;
+            margin: 1rem 0 0.5rem;
+        }
+        .pricing-price small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--muted);
+        }
+        .pricing-desc {
+            color: var(--bone-dim);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .pricing-features {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        .pricing-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .pricing-features li .check {
+            color: var(--red);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .pricing-features li .check svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--red);
+        }
+        .pricing-card .btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .testimonial-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 2rem;
+        }
+        .quote {
+            font-size: 1rem;
+            color: var(--bone-dim);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        .author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--red), var(--azure));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        /* Channel Stats Card */
+        .channel-stats {
+            background: linear-gradient(135deg, var(--surface), var(--surface-2));
+            border-radius: 32px;
+            padding: 2.5rem;
+            border: 1px solid var(--line);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        .channel-stat .value {
+            font-size: 2.8rem;
+            font-family: var(--display);
+            font-weight: 700;
+            color: var(--red);
+        }
+        .channel-stat .label {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--surface), var(--surface-2));
+            border-radius: 32px;
+            padding: 4rem;
+            text-align: center;
+            border: 1px solid var(--line);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--line);
+            padding: 3rem 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            transform: translateY(-100%);
+            transition: transform 0.5s var(--ease);
+        }
+        .mobile-menu.open {
+            transform: translateY(0);
+        }
+        .mobile-menu a {
+            font-family: var(--display);
+            font-size: 2rem;
+            text-decoration: none;
+            color: var(--bone);
+        }
+
+        @media (max-width: 640px) {
+            .features-grid,
+            .case-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .cta-section {
+                padding: 2rem;
+            }
+            .channel-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* SVG icon helpers */
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+
+        html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+    </style>
+</head>
+<body>
+
+    <!-- Hidden SVG sprite for all icons -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+        <symbol id="icon-robot" viewBox="0 0 24 24">
+            <path d="M12 2a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2zM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm8 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-4 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" fill="currentColor"/>
+            <circle cx="8" cy="10" r="1" fill="currentColor"/>
+            <circle cx="16" cy="10" r="1" fill="currentColor"/>
+            <rect x="10" y="14" width="4" height="2" rx="1" fill="currentColor"/>
+        </symbol>
+        <symbol id="icon-pen" viewBox="0 0 24 24">
+            <path d="M16.47 3.72a1.25 1.25 0 0 1 1.767 0l2.043 2.043a1.25 1.25 0 0 1 0 1.767l-9.755 9.755a.75.75 0 0 1-.33.194l-4.82 1.607a.75.75 0 0 1-.95-.95l1.607-4.82a.75.75 0 0 1 .194-.33l9.755-9.755a1.25 1.25 0 0 1 .052-.052zM15.5 6.5L17.5 8.5M6.5 14.5L9.5 17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M3 21l4.5-1.5L21 6.5 17.5 3 3 16.5z" opacity="0.4" fill="currentColor"/>
+        </symbol>
+        <symbol id="icon-mic" viewBox="0 0 24 24">
+            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M4 11a8 8 0 0 0 16 0M8 21h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="icon-scissors" viewBox="0 0 24 24">
+            <circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="6" cy="18" r="2.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M8.5 6L19 18M8.5 18L19 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="icon-chart" viewBox="0 0 24 24">
+            <path d="M3 17v4h18v-4M5 21V7l4-3 4 3v14M13 21V11l4-3 4 3v10" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+            <rect x="5" y="7" width="4" height="14" rx="0.5" fill="currentColor" opacity="0.25"/>
+            <rect x="13" y="11" width="4" height="10" rx="0.5" fill="currentColor" opacity="0.4"/>
+            <rect x="9" y="4" width="4" height="17" rx="0.5" fill="currentColor" opacity="0.55"/>
+        </symbol>
+        <symbol id="icon-growth" viewBox="0 0 24 24">
+            <path d="M3 17l4-4 4 4 8-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M19 7v4h-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </symbol>
+        <symbol id="icon-play" viewBox="0 0 24 24">
+            <path d="M6 4l14 8-14 8V4z" fill="currentColor"/>
+        </symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24">
+            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </symbol>
+        <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+            <path d="M12 20V4M5 11l7-7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </symbol>
+        <symbol id="icon-youtube" viewBox="0 0 24 24">
+            <path d="M23.5 6.8a3 3 0 0 0-2.1-2.1C19.5 4 12 4 12 4s-7.5 0-9.4.7A3 3 0 0 0 .5 6.8C0 8.7 0 12 0 12s0 3.3.5 5.2a3 3 0 0 0 2.1 2.1C4.5 20 12 20 12 20s7.5 0 9.4-.7a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.2.5-5.2s0-3.3-.5-5.2zM9.6 15.2V8.8l6.3 3.2-6.3 3.2z" fill="currentColor"/>
+        </symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+            <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </symbol>
+        <symbol id="icon-arrow-long" viewBox="0 0 24 24">
+            <path d="M4 12h16M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </symbol>
+        <symbol id="icon-bolt" viewBox="0 0 24 24">
+            <path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+        </symbol>
+        <symbol id="icon-rocket" viewBox="0 0 24 24">
+            <path d="M12 2s-3 3-3 8v4l-3 3h12l-3-3v-4c0-5-3-8-3-8z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="12" cy="16" r="2" fill="currentColor" opacity="0.3"/>
+            <path d="M9 19l-2 3h10l-2-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </symbol>
+    </svg>
+
+    <canvas id="canvas-3d"></canvas>
+
+    <div class="content">
+        <header id="header">
+            <div class="wrap nav">
+                <a href="#" class="logo"><span class="logo-mark"></span>PEAK PIONEERS</a>
+                <div class="nav-links">
+                    <a href="peak-pioneers (1).html">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#work">Recent Work</a>
+                    <a href="#workflow">Process</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <a href="#contact" class="btn btn-primary">Start a Channel →</a>
+                <button class="burger" id="burger"><span></span><span></span><span></span></button>
+            </div>
+        </header>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="peak-pioneers (1).html">Home</a>
+            <a href="#features">Features</a>
+            <a href="#work">Recent Work</a>
+            <a href="#workflow">Process</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        <main>
+            <!-- Hero with Video Banner -->
+            <section class="hero">
+                <div class="video-banner">
+                    <video autoplay loop muted playsinline>
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-typing-on-a-laptop-keyboard-words-appear-on-screen-37495-large.mp4" type="video/mp4">
+                    </video>
+                    <div class="overlay"></div>
+                </div>
+                <div class="wrap">
+                    <h1>
+                        YouTube Automation<br>
+                        <span class="gradient-text">Scale to Millions</span>
+                    </h1>
+                    <p class="lede">
+                        Build faceless channels, automate content production, and scale to millions of subscribers.
+                        Our systems handle scripting, voiceover, editing, and publishing — on autopilot.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item"><div class="stat-number">1.2M+</div><div class="stat-label">Subscribers Generated</div></div>
+                        <div class="stat-item"><div class="stat-number">50+</div><div class="stat-label">Channels Launched</div></div>
+                        <div class="stat-item"><div class="stat-number">8.4M</div><div class="stat-label">Monthly Views</div></div>
+                    </div>
+                    <div class="cta-group">
+                        <a href="#contact" class="btn btn-primary">Start Your Channel →</a>
+                        <a href="#work" class="btn btn-outline">View Case Studies</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Grid -->
+            <section id="features">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">What We Build</div>
+                        <h2>Full-Stack YouTube Automation</h2>
+                        <p>End-to-end systems that turn YouTube into a revenue machine</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon"><svg viewBox="0 0 24 24"><use href="#icon-robot"/></svg></div>
+                            <h3>Faceless Channel Builder</h3>
+                            <p>Fully automated channels using stock footage, AI voiceover, and dynamic captions — no on-camera talent needed.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><svg viewBox="0 0 24 24"><use href="#icon-pen"/></svg></div>
+                            <h3>AI Script Writing</h3>
+                            <p>Research-backed scripts optimized for retention, CTR, and algorithm performance.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><svg viewBox="0 0 24 24"><use href="#icon-mic"/></svg></div>
+                            <h3>AI Voiceover Studio</h3>
+                            <p>Natural, human-like voiceovers in 30+ languages and accents.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><svg viewBox="0 0 24 24"><use href="#icon-scissors"/></svg></div>
+                            <h3>Automated Editing</h3>
+                            <p>Dynamic editing, B-roll insertion, captions, and visual effects — all automated.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><svg viewBox="0 0 24 24"><use href="#icon-chart"/></svg></div>
+                            <h3>YouTube SEO Engine</h3>
+                            <p>AI-powered title, description, tag, and thumbnail optimization for maximum reach.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><svg viewBox="0 0 24 24"><use href="#icon-growth"/></svg></div>
+                            <h3>Growth Analytics</h3>
+                            <p>Real-time dashboard tracking views, watch time, subscribers, and revenue.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Channel Stats Showcase -->
+            <section>
+                <div class="wrap">
+                    <div class="channel-stats">
+                        <div class="channel-stat"><div class="value">1.2M</div><div class="label">Total Subscribers</div></div>
+                        <div class="channel-stat"><div class="value">8.4M</div><div class="label">Monthly Views</div></div>
+                        <div class="channel-stat"><div class="value">$247K</div><div class="label">Monthly Ad Revenue</div></div>
+                        <div class="channel-stat"><div class="value">50+</div><div class="label">Active Channels</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Work / Case Studies with YouTube Thumbnails -->
+            <section id="work">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">Success Stories</div>
+                        <h2>Channels That Blew Up</h2>
+                    </div>
+                    <div class="case-grid">
+                        <!-- Royal Family Drama -->
+                        <a href="https://youtube.com/@royalfamilydrama-r7t?si=b53HbG7ehKpydT6c" target="_blank" class="case-card">
+                            <div class="case-thumbnail">
+                                <img src="Images/Screenshot_20260706_154751_YouTube.jpg" alt="Royal Family Drama" loading="lazy">
+                                <div class="play-overlay">
+                                    <div class="play-btn"><svg viewBox="0 0 24 24"><use href="#icon-play"/></svg></div>
+                                </div>
+                                <div class="channel-badge">
+                                    <span class="yt-icon"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></span>
+                                    Watch on YouTube
+                                </div>
+                            </div>
+                            <div class="case-content">
+                                <div class="case-tag">Faceless · History Channel</div>
+                                <h3>Royal Family Drama</h3>
+                                <p>Grew from 0 to 1.11K subscribers in 11 months using our faceless automation system.</p>
+                                <div class="case-result">
+                                    <span class="subscriber-count">1.11K Subs</span> → <span>$8K/month</span>
+                                </div>
+                                <div class="watch-link">Watch Channel <span class="arrow">→</span></div>
+                            </div>
+                        </a>
+
+                        <!-- Emergency Awesome -->
+                        <a href="https://youtube.com/@emergencyawesome?si=3amuJCpZj-ajAQMk" target="_blank" class="case-card">
+                            <div class="case-thumbnail">
+                                <img src="Images/Screenshot_20260706_154813_YouTube.jpg" alt="Emergency Awesome" loading="lazy">
+                                <div class="play-overlay">
+                                    <div class="play-btn"><svg viewBox="0 0 24 24"><use href="#icon-play"/></svg></div>
+                                </div>
+                                <div class="channel-badge">
+                                    <span class="yt-icon"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></span>
+                                    Watch on YouTube
+                                </div>
+                            </div>
+                            <div class="case-content">
+                                <div class="case-tag">Storytelling · AI Narrated</div>
+                                <h3>Emergency Awesome</h3>
+                                <p>True crime channel scaled to 4.76M subscribers in 8 months with fully automated production.</p>
+                                <div class="case-result">
+                                    <span class="subscriber-count">4.76M Subs</span> → <span>$14K/month</span>
+                                </div>
+                                <div class="watch-link">Watch Channel <span class="arrow">→</span></div>
+                            </div>
+                        </a>
+
+                        <!-- Valathor -->
+                        <a href="https://youtube.com/@valathor?si=e7u5frETiy-P0TIT" target="_blank" class="case-card">
+                            <div class="case-thumbnail">
+                                <img src="Images/Screenshot_20260706_154831_YouTube.jpg" alt="Valathor" loading="lazy">
+                                <div class="play-overlay">
+                                    <div class="play-btn"><svg viewBox="0 0 24 24"><use href="#icon-play"/></svg></div>
+                                </div>
+                                <div class="channel-badge">
+                                    <span class="yt-icon"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></span>
+                                    Watch on YouTube
+                                </div>
+                            </div>
+                            <div class="case-content">
+                                <div class="case-tag">Educational · Tech Explainer</div>
+                                <h3>Valathor</h3>
+                                <p>Tech news channel hit 369K subscribers in 6 months using our AI script-to-video pipeline.</p>
+                                <div class="case-result">
+                                    <span class="subscriber-count">369K Subs</span> → <span>$8.5K/month</span>
+                                </div>
+                                <div class="watch-link">Watch Channel <span class="arrow">→</span></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Workflow Diagram -->
+            <section id="workflow">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">How It Works</div>
+                        <h2>From Idea to Viral Video</h2>
+                    </div>
+                    <div class="workflow">
+                        <div class="workflow-steps">
+                            <div class="workflow-step"><div class="step-number">1</div><h4>Research</h4><p>Trend analysis & niche selection</p></div>
+                            <div class="step-arrow">→</div>
+                            <div class="workflow-step"><div class="step-number">2</div><h4>Script</h4><p>AI-generated, retention-optimized</p></div>
+                            <div class="step-arrow">→</div>
+                            <div class="workflow-step"><div class="step-number">3</div><h4>Voice</h4><p>Natural AI voiceover</p></div>
+                            <div class="step-arrow">→</div>
+                            <div class="workflow-step"><div class="step-number">4</div><h4>Edit</h4><p>Auto-editing + B-roll</p></div>
+                            <div class="step-arrow">→</div>
+                            <div class="workflow-step"><div class="step-number">5</div><h4>Publish</h4><p>SEO-optimized upload</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Metrics Dashboard -->
+            <section id="metrics">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">Real Results</div>
+                        <h2>Live Performance Dashboard</h2>
+                    </div>
+                    <div class="metrics-dash">
+                        <div class="dash-header">
+                            <span style="font-weight:600;">▶ PEAK YT · AUTOMATION CONSOLE</span>
+                            <span class="dash-status"><span class="dot"></span> ACTIVE · 24/7 PRODUCTION</span>
+                        </div>
+                        <div class="dash-metrics">
+                            <div class="metric-card">
+                                <div class="metric-value">247</div>
+                                <div class="metric-label">Videos Published (30d)</div>
+                                <span class="trend-up"><svg viewBox="0 0 24 24"><use href="#icon-arrow-up"/></svg> +34%</span>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">8.4M</div>
+                                <div class="metric-label">Total Views</div>
+                                <span class="trend-up"><svg viewBox="0 0 24 24"><use href="#icon-arrow-up"/></svg> +28%</span>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">4.2%</div>
+                                <div class="metric-label">Avg CTR</div>
+                                <span class="trend-up"><svg viewBox="0 0 24 24"><use href="#icon-arrow-up"/></svg> +0.8%</span>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">18:24</div>
+                                <div class="metric-label">Avg Watch Time</div>
+                                <span class="trend-up"><svg viewBox="0 0 24 24"><use href="#icon-arrow-up"/></svg> +2min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pricing Section -->
+            <section id="pricing">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">Invest in Growth</div>
+                        <h2>YouTube Automation Packages</h2>
+                    </div>
+                    <div class="pricing-grid">
+                        <div class="pricing-card">
+                            <div class="pricing-name">Starter Channel</div>
+                            <div class="pricing-price">$3K<small>/month</small></div>
+                            <div class="pricing-desc">Perfect for testing the YouTube automation model.</div>
+                            <ul class="pricing-features">
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>4 videos per week</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>AI script writing</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Voiceover + editing</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Basic SEO optimization</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Monthly analytics report</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-outline">Start Now →</a>
+                        </div>
+
+                        <div class="pricing-card featured">
+                            <div class="pricing-name">Growth Package</div>
+                            <div class="pricing-price">$7K<small>/month</small></div>
+                            <div class="pricing-desc">For serious creators ready to scale to millions.</div>
+                            <ul class="pricing-features">
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>8-10 videos per week</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Premium AI voice studio</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Custom thumbnail design</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Advanced YouTube SEO</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Multi-language support</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Dedicated channel manager</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-primary">Scale My Channel →</a>
+                        </div>
+
+                        <div class="pricing-card">
+                            <div class="pricing-name">Empire Package</div>
+                            <div class="pricing-price">$15K+<small>/month</small></div>
+                            <div class="pricing-desc">Multi-channel networks at scale.</div>
+                            <ul class="pricing-features">
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>3+ channels simultaneously</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Full animation team</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Custom music & sound design</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Influencer collaborations</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>Merch & affiliate setup</li>
+                                <li><span class="check"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span>24/7 priority support</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-outline">Contact Sales →</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testimonials -->
+            <section>
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">Client Love</div>
+                        <h2>What Channel Owners Say</h2>
+                    </div>
+                    <div class="testimonials-grid">
+                        <div class="testimonial-card"><div class="quote">"Peak Pioneers built me a faceless history channel that hit 1 million subscribers in under a year. The automation system is incredible."</div><div class="author"><div class="author-avatar">MJ</div><div><strong>Michael Chen</strong><br><small>Timeless History</small></div></div></div>
+                        <div class="testimonial-card"><div class="quote">"I went from zero YouTube experience to running 3 profitable channels. Their system handles everything — I just check the revenue dashboard."</div><div class="author"><div class="author-avatar">SR</div><div><strong>Sarah Rodriguez</strong><br><small>Content Empire</small></div></div></div>
+                        <div class="testimonial-card"><div class="quote">"The ROI is insane. My channel generates $18k/month and I barely touch it. Best investment I've made."</div><div class="author"><div class="author-avatar">DT</div><div><strong>David Turner</strong><br><small>Mystery Files</small></div></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final CTA -->
+            <section id="contact">
+                <div class="wrap">
+                    <div class="cta-section">
+                        <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem);">Ready to Build Your Channel?</h2>
+                        <p style="color: var(--bone-dim); margin: 1rem auto; max-width: 50ch;">Book a free strategy call. We'll identify your niche and map out your path to monetization.</p>
+                        <a href="#" class="btn btn-primary" style="margin-top: 1rem;">Book Your YouTube Strategy Call →</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="wrap">
+                <p>© 2026 Peak Pioneers — YouTube Automation That Scales Channels to Millions</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+    </script>
+    <script>
+        (function() {
+            // 3D Background - YouTube themed (red/blue floating particles)
+            const canvas = document.getElementById('canvas-3d');
+            if (canvas && typeof THREE !== 'undefined') {
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.z = 14;
+                const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+
+                // Play button shaped particle system
+                const particleCount = 1000;
+                const positions = new Float32Array(particleCount * 3);
+                const colors = new Float32Array(particleCount * 3);
+
+                for (let i = 0; i < particleCount; i++) {
+                    const radius = 6 + Math.random() * 5;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos(2 * Math.random() - 1);
+                    positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+                    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.6;
+                    positions[i * 3 + 2] = radius * Math.cos(phi);
+
+                    // Red and blue gradient colors
+                    const isRed = Math.random() > 0.5;
+                    colors[i * 3] = isRed ? 0.94 : 0.15;
+                    colors[i * 3 + 1] = isRed ? 0.27 : 0.39;
+                    colors[i * 3 + 2] = isRed ? 0.27 : 0.99;
+                }
+
+                const particleGeo = new THREE.BufferGeometry();
+                particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                const particleMat = new THREE.PointsMaterial({ size: 0.07, vertexColors: true, transparent: true,
+                    opacity: 0.5 });
+                const particles = new THREE.Points(particleGeo, particleMat);
+                scene.add(particles);
+
+                // Floating play button shape (simplified)
+                const playGeo = new THREE.CylinderGeometry(0.8, 0.8, 1.2, 3);
+                const playMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xef4444,
+                    emissiveIntensity: 0.15 });
+                const playButton = new THREE.Mesh(playGeo, playMat);
+                playButton.rotation.z = Math.PI / 2;
+                playButton.position.x = -2;
+                playButton.position.y = 1;
+                scene.add(playButton);
+
+                const ringGeo = new THREE.TorusGeometry(2.8, 0.08, 64, 200);
+                const ringMat = new THREE.MeshStandardMaterial({ color: 0x2563eb, emissive: 0x2563eb,
+                    emissiveIntensity: 0.2 });
+                const ring = new THREE.Mesh(ringGeo, ringMat);
+                scene.add(ring);
+
+                const ambientLight = new THREE.AmbientLight(0x111122);
+                scene.add(ambientLight);
+                const pointLight = new THREE.PointLight(0xef4444, 0.4);
+                pointLight.position.set(3, 2, 4);
+                scene.add(pointLight);
+
+                let time = 0;
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    time += 0.008;
+                    particles.rotation.y = time * 0.08;
+                    particles.rotation.x = Math.sin(time * 0.15) * 0.1;
+                    ring.rotation.x = time * 0.3;
+                    ring.rotation.z = time * 0.2;
+                    playButton.rotation.z = Math.sin(time) * 0.1;
+                    renderer.render(scene, camera);
+                }
+                animate();
+
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+
+            // Hover effects
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--x', x + 'px');
+                    card.style.setProperty('--y', y + 'px');
+                });
+            });
+
+            // Mobile menu
+            const burger = document.getElementById('burger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (burger && mobileMenu) {
+                burger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+                mobileMenu.querySelectorAll('a').forEach(a => {
+                    a.addEventListener('click', () => mobileMenu.classList.remove('open'));
+                });
+            }
+
+            // Scroll header
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+            });
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

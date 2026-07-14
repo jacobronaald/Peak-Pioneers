@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marketing Strategy | Peak Pioneers — Revenue-Mapped Growth Systems</title>
+<meta name="description" content="Data-driven marketing strategy that compounds. We build revenue-mapped roadmaps that turn marketing into your strongest growth lever." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --obsidian:#EAEEF6;
+    --ink:#F2F5FB;
+    --surface:#FFFFFF;
+    --surface-2:#E9EEF6;
+    --line:rgba(12,18,34,0.10);
+    --line-strong:rgba(12,18,34,0.17);
+    --bone:#0C1222;
+    --bone-dim:#49506A;
+    --muted:#858DA3;
+    --azure:#2563EB;
+    --cyan:#0891B2;
+    --gold:#B8841F;
+    --purple:#8B5CF6;
+    --glass:rgba(255,255,255,0.66);
+    --display:'Space Grotesk',sans-serif;
+    --giant:'Archivo Black',sans-serif;
+    --body:'Inter',sans-serif;
+    --mono:'Space Mono',monospace;
+    --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--obsidian);
+    color:var(--bone);
+    font-family:var(--body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--azure);color:#fff}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1240px,90vw);margin-inline:auto}
+  .eyebrow{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--muted);display:inline-flex;align-items:center;gap:.65rem;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--azure)}
+  h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.05;letter-spacing:-0.02em}
+  .grad{background:linear-gradient(100deg,var(--cyan),var(--azure),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .grad-gold{background:linear-gradient(100deg,var(--gold),#F59E0B);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:.6rem;font-family:var(--display);font-weight:600;
+    font-size:.95rem;padding:1rem 1.7rem;border-radius:100px;border:1px solid transparent;
+    cursor:pointer;transition:transform .4s var(--ease),background .4s var(--ease),box-shadow .4s var(--ease);
+    white-space:nowrap;
+  }
+  .btn .arr{transition:transform .4s var(--ease)}
+  .btn:hover .arr{transform:translateX(4px)}
+  .btn-primary{background:var(--azure);color:#fff}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(37,124,255,.32)}
+  .btn-ghost{background:#fff;color:var(--bone);border-color:var(--line-strong)}
+  .btn-ghost:hover{background:var(--surface-2);border-color:var(--bone)}
+  .btn-outline{background:transparent;border-color:var(--line-strong);color:var(--bone)}
+  .btn-outline:hover{background:var(--surface);border-color:var(--azure)}
+
+  header{position:fixed;top:0;left:0;right:0;z-index:900;transition:background .5s var(--ease),backdrop-filter .5s}
+  header.scrolled{background:rgba(255,255,255,.78);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:1.3rem 0}
+  .navlinks{display:flex;gap:2.2rem;font-size:.92rem;font-weight:500}
+  .navlinks a{color:var(--bone-dim);transition:color .3s;position:relative}
+  .navlinks a::after{content:"";position:absolute;left:0;bottom:-6px;height:1px;width:0;background:var(--azure);transition:width .35s var(--ease)}
+  .navlinks a:hover{color:var(--bone)}
+  .navlinks a:hover::after{width:100%}
+  .logo{font-family:var(--giant);font-size:1.15rem;letter-spacing:-.02em;display:flex;align-items:center;gap:.6rem}
+  .peak-mark{width:30px;height:30px}
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer}
+  .burger span{width:24px;height:2px;background:var(--bone);transition:.3s}
+  .mobile-menu{position:fixed;inset:0;z-index:850;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);
+    display:flex;flex-direction:column;justify-content:center;gap:1.5rem;padding:2rem;
+    transform:translateY(-100%);transition:transform .6s var(--ease);}
+  .mobile-menu.open{transform:translateY(0)}
+  .mobile-menu a{font-family:var(--display);font-size:2rem;font-weight:600}
+
+  /* Hero */
+  .hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden}
+  #hero-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+  .hero-veil{position:absolute;inset:0;z-index:1;background:radial-gradient(55% 55% at 30% 40%,rgba(184,132,31,.08),transparent 70%),
+    radial-gradient(48% 48% at 80% 70%,rgba(37,99,235,.1),transparent 70%),
+    linear-gradient(180deg,rgba(234,238,246,0),rgba(234,238,246,.45) 62%,var(--obsidian))}
+  .hero-inner{position:relative;z-index:3;width:100%}
+  .hero h1{font-size:clamp(2.6rem,7vw,5.8rem);max-width:18ch}
+  .hero h1 .ln{display:block;overflow:hidden}
+  .hero h1 .ln i{display:block;font-style:normal}
+  .hero p.lede{margin-top:1.8rem;max-width:50ch;color:var(--bone-dim);font-size:clamp(1rem,1.4vw,1.2rem)}
+  .hero .cta-row{margin-top:2.6rem;display:flex;gap:1rem;flex-wrap:wrap}
+  .hero-badge{display:inline-flex;align-items:center;gap:.7rem;margin-bottom:2rem;padding:.5rem 1rem;
+    border:1px solid var(--line);border-radius:100px;font-family:var(--mono);font-size:.68rem;
+    background:var(--glass);backdrop-filter:blur(8px)}
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* Split Video Section */
+  .split-video{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--bone);border-radius:28px;overflow:hidden}
+  .video-side{position:relative;min-height:400px}
+  .video-side video{width:100%;height:100%;object-fit:cover}
+  .copy-side{padding:3rem;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(135deg,#0C1222,#1a1f2e);color:#fff}
+  .copy-side .eyebrow::before{background:var(--gold)}
+  .copy-side h2{color:#fff;font-size:clamp(1.6rem,3vw,2.2rem);margin:1rem 0}
+  .copy-side p{color:rgba(255,255,255,.7);margin-bottom:1.5rem}
+  .stat-row{display:flex;gap:2rem;margin-top:1rem}
+  .stat-row .stat{text-align:center}
+  .stat-row .number{font-family:var(--display);font-size:2rem;font-weight:700;color:var(--gold)}
+  .stat-row .label{font-size:.75rem;opacity:.7}
+
+  /* Framework Section with 3D */
+  .framework-3d{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  .three-container{height:450px;background:linear-gradient(135deg,var(--surface-2),var(--ink));border-radius:28px;overflow:hidden;position:relative}
+  #three-canvas{width:100%;height:100%;display:block}
+  .pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+  .pillar{padding:1.5rem;border:1px solid var(--line);border-radius:20px;background:var(--surface);transition:all .4s}
+  .pillar:hover{transform:translateY(-5px);border-color:var(--azure);box-shadow:0 20px 30px rgba(0,0,0,.08)}
+  .pillar .icon{font-size:2rem;margin-bottom:1rem}
+  .pillar h3{font-size:1.2rem;margin-bottom:.5rem}
+  .pillar p{color:var(--muted);font-size:.85rem}
+
+  /* Services Grid */
+  .service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem}
+  .service-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.5rem;transition:all .4s}
+  .service-card:hover{transform:translateY(-5px);border-color:var(--azure);box-shadow:0 20px 30px rgba(0,0,0,.08)}
+  .service-card .icon{font-size:2rem;margin-bottom:1rem}
+  .service-card h3{font-size:1.2rem;margin-bottom:.5rem}
+  .service-card p{color:var(--muted);font-size:.85rem}
+
+  /* Process Timeline */
+  .timeline{position:relative;padding:2rem 0}
+  .timeline-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--azure),var(--cyan));transform:translateX(-50%)}
+  .timeline-item{display:flex;justify-content:space-between;margin-bottom:3rem;position:relative}
+  .timeline-item:nth-child(even){flex-direction:row-reverse}
+  .timeline-content{width:45%;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.5rem}
+  .timeline-dot{position:absolute;left:50%;top:20px;width:16px;height:16px;background:var(--azure);border:3px solid var(--obsidian);border-radius:50%;transform:translateX(-50%);z-index:2}
+  .timeline-content .step-num{font-family:var(--mono);font-size:.7rem;color:var(--azure);letter-spacing:.15em}
+  .timeline-content h3{font-size:1.2rem;margin:.5rem 0}
+
+  /* Before/After Banner */
+  .compare-banner{background:linear-gradient(135deg,var(--bone),#1a1f2e);border-radius:28px;padding:3rem;color:#fff}
+  .compare-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;align-items:center}
+  .compare-card{background:rgba(255,255,255,.05);border-radius:20px;padding:2rem;text-align:center;backdrop-filter:blur(10px)}
+  .compare-card.before{border-left:3px solid #ef4444}
+  .compare-card.after{border-right:3px solid var(--cyan)}
+  .compare-card h3{font-size:1.5rem;margin-bottom:1rem}
+  .compare-card .stat{font-family:var(--display);font-size:2.5rem;color:var(--gold);margin:1rem 0}
+  .vs-badge{width:60px;height:60px;background:linear-gradient(135deg,var(--azure),var(--cyan));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem}
+
+  /* Stats Grid */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2rem}
+  .stat-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:2rem;text-align:center;transition:all .4s}
+  .stat-card:hover{transform:translateY(-5px);border-color:var(--azure)}
+  .stat-card .number{font-family:var(--display);font-size:3rem;font-weight:700;background:linear-gradient(135deg,var(--azure),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat-card .label{color:var(--muted);margin-top:.5rem}
+  .stat-card .trend{color:var(--cyan);font-size:.8rem;margin-top:.5rem}
+
+  /* Pricing Tiers */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2rem}
+  .pricing-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:2rem;transition:all .4s}
+  .pricing-card:hover{transform:translateY(-8px);border-color:var(--azure);box-shadow:0 30px 50px rgba(0,0,0,.08)}
+  .pricing-card.feat{border-color:var(--azure);background:linear-gradient(180deg,rgba(37,99,235,.05),var(--surface));position:relative}
+  .pricing-card.feat::before{content:"Most Popular";position:absolute;top:-12px;right:20px;background:var(--azure);color:#fff;padding:.3rem 1rem;border-radius:100px;font-size:.7rem;font-family:var(--mono)}
+  .pricing-card .price{font-family:var(--display);font-size:2.5rem;font-weight:700;margin:1rem 0}
+  .pricing-card .price small{font-size:.9rem;font-weight:400;color:var(--muted)}
+  .pricing-card ul{list-style:none;margin:1.5rem 0}
+  .pricing-card li{padding:.5rem 0;display:flex;align-items:center;gap:.5rem}
+  .pricing-card li::before{content:"\2714";color:var(--cyan);font-weight:700}
+
+  /* FAQ Accordion */
+  .faq-item{border:1px solid var(--line);border-radius:16px;margin-bottom:1rem;overflow:hidden}
+  .faq-question{background:var(--surface);padding:1.2rem 1.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;transition:background .3s}
+  .faq-question:hover{background:var(--surface-2)}
+  .faq-question .icon{transition:transform .3s;font-size:1.2rem;font-weight:300}
+  .faq-answer{padding:0 1.5rem;max-height:0;overflow:hidden;transition:max-height .4s ease, padding .4s ease}
+  .faq-item.open .faq-answer{padding:0 1.5rem 1.2rem;max-height:200px}
+  .faq-item.open .faq-question .icon{transform:rotate(45deg)}
+
+  /* CTA Section */
+  .cta-section{background:linear-gradient(135deg,var(--azure),var(--purple));border-radius:32px;padding:4rem;text-align:center;color:#fff}
+  .cta-section h2{font-size:2.5rem;margin-bottom:1rem}
+  .cta-section .btn-primary{background:#fff;color:var(--azure);margin-top:1rem}
+
+  /* Footer */
+  /* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:4rem 0 2.5rem;margin-top:4rem}
+.foot-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:3rem}
+.foot-brand .logo{font-size:1.5rem;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.foot-brand p{color:var(--muted);max-width:34ch;font-size:.92rem;line-height:1.7}
+.foot-brand a{color:var(--muted);font-size:.85rem;transition:color .3s}
+.foot-brand a:hover{color:var(--bone)}
+.fcol h5{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;font-weight:600}
+.fcol a{display:block;color:var(--bone-dim);font-size:.9rem;margin-bottom:.6rem;transition:color .3s}
+.fcol a:hover{color:var(--bone)}
+.foot-bot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:2rem;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+.foot-bot a{color:var(--muted);transition:color .3s}
+.foot-bot a:hover{color:var(--bone)}
+@media(max-width:1024px){
+  .foot-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .foot-top{grid-template-columns:1fr}
+}
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001s!important;transition-duration:.001s!important}
+  }
+
+  html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+
+<header id="header">
+  <div class="wrap nav">
+    <a href="../index.html" class="logo">
+      <svg class="peak-mark" viewBox="0 0 100 100">
+        <path d="M60 20 L93 80 L42 80 Z" fill="#2563EB"/>
+        <path d="M40 28 L72 82 L8 82 Z" fill="#0891B2"/>
+        <path d="M40 28 L8 82" stroke="#fff" stroke-width="1.5" fill="none"/>
+      </svg>
+      PEAK PIONEERS
+    </a>
+    <nav class="navlinks">
+      <a href="peak-pioneers (1).html">Home</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#results">Results</a>
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="../index.html#about">About</a>
+    </nav>
+    <a href="../index.html#contact" class="btn btn-primary">Book strategy call <span class="arr">→</span></a>
+    <button class="burger" id="burger"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="peak-pioneers (1).html">Home</a>
+  <a href="../index.html#services">Services</a>
+  <a href="../index.html#results">Results</a>
+  <a href="../index.html#work">Work</a>
+  <a href="../index.html#pricing">Pricing</a>
+  <a href="../index.html#about">About</a>
+  <a href="../index.html#contact">Book a call →</a>
+</div>
+
+<main>
+<!-- HERO SECTION -->
+<section class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-veil"></div>
+  <div class="hero-inner">
+    <div class="wrap">
+      <div class="hero-badge"><span class="pulse"></span>REVENUE-MAPPED STRATEGY</div>
+      <h1>
+        <span class="ln"><i>Marketing strategy</i></span>
+        <span class="ln"><i>that <span class="grad">compounds.</span></i></span>
+      </h1>
+      <p class="lede">Stop chasing tactics. We build revenue-mapped roadmaps that turn marketing into your strongest growth lever — backed by data, powered by systems.</p>
+      <div class="cta-row">
+        <a href="#contact" class="btn btn-primary">Book strategy call <span class="arr">→</span></a>
+        <a href="#case-studies" class="btn btn-ghost">View case studies</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT VIDEO SECTION -->
+<section style="padding:4rem 0">
+  <div class="wrap">
+    <div class="split-video">
+      <div class="video-side">
+        <video autoplay muted loop playsinline poster="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?w=800&h=600&fit=crop">
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-statistics-animation-2193-large.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="copy-side">
+        <span class="eyebrow">Watch the transformation</span>
+        <h2>From plateau to exponential</h2>
+        <p>See how we transformed a $12M SaaS company's marketing strategy in 90 days — rebuilding their entire go-to-market motion and generating 3.2x pipeline growth.</p>
+        <div class="stat-row">
+          <div class="stat"><div class="number">3.2x</div><div class="label">Pipeline growth</div></div>
+          <div class="stat"><div class="number">156%</div><div class="label">ROAS increase</div></div>
+          <div class="stat"><div class="number">47%</div><div class="label">CAC reduction</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3D FRAMEWORK SECTION -->
+<section style="padding:4rem 0; background:var(--ink)">
+  <div class="wrap">
+    <div style="text-align:center; margin-bottom:3rem">
+      <span class="eyebrow" style="justify-content:center">The Peak Framework</span>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.8rem); margin-top:1rem">Four pillars.<br><span class="grad-gold">One compounding system.</span></h2>
+    </div>
+    <div class="framework-3d">
+      <div class="three-container">
+        <canvas id="three-canvas"></canvas>
+      </div>
+      <div class="pillars">
+        <div class="pillar"><div class="icon">&#128270;</div><h3>Audit &amp; Discovery</h3><p>Deep data dive to find the constraint holding growth back</p></div>
+        <div class="pillar"><div class="icon">&#128506;</div><h3>Roadmap Engineering</h3><p>Revenue-mapped plan prioritised by impact</p></div>
+        <div class="pillar"><div class="icon">&#9881;</div><h3>System Build</h3><p>Full implementation of channels, automation, and tracking</p></div>
+        <div class="pillar"><div class="icon">&#128200;</div><h3>Compound &amp; Scale</h3><p>Continuous optimization that multiplies results</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES WE OFFER -->
+<section style="padding:4rem 0">
+  <div class="wrap">
+    <div style="text-align:center; margin-bottom:2rem">
+      <span class="eyebrow" style="justify-content:center">What's inside</span>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">Your strategy engine</h2>
+    </div>
+    <div class="service-grid">
+      <div class="service-card"><div class="icon">&#128640;</div><h3>Market Intelligence</h3><p>Deep research on competitors, audiences, and opportunities</p></div>
+      <div class="service-card"><div class="icon">&#127942;</div><h3>Competitive Positioning</h3><p>Differentiation that wins in crowded markets</p></div>
+      <div class="service-card"><div class="icon">&#128176;</div><h3>Revenue Modeling</h3><p>Financial forecasting that guides investment decisions</p></div>
+      <div class="service-card"><div class="icon">&#128225;</div><h3>Channel Orchestration</h3><p>Integrated multi-channel strategies that work together</p></div>
+      <div class="service-card"><div class="icon">&#128202;</div><h3>Performance Analytics</h3><p>Real-time dashboards that drive decisions</p></div>
+      <div class="service-card"><div class="icon">&#129514;</div><h3>Growth Experimentation</h3><p>Systematic testing that finds winning levers</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS TIMELINE -->
+<section style="padding:4rem 0; background:var(--ink)">
+  <div class="wrap">
+    <div style="text-align:center; margin-bottom:3rem">
+      <span class="eyebrow" style="justify-content:center">From discovery to dominance</span>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">A proven path to scale</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-line"></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="step-num">PHASE 01 &middot; WEEK 1-2</div><h3>Audit &amp; Discovery</h3><p>Deep data dive, stakeholder interviews, and competitive analysis. We find the constraint holding growth back.</p></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="step-num">PHASE 02 &middot; WEEK 3-4</div><h3>Strategy &amp; Roadmap</h3><p>Revenue-mapped plan with channel priorities, budget allocation, and 90-day execution timeline.</p></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="step-num">PHASE 03 &middot; WEEK 5-8</div><h3>Build &amp; Implement</h3><p>Full system deployment — campaigns, automation, tracking, and team training.</p></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="step-num">PHASE 04 &middot; ONGOING</div><h3>Optimize &amp; Scale</h3><p>Weekly sprints, continuous testing, and compounding results that keep growing.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE/AFTER BANNER -->
+<section style="padding:4rem 0">
+  <div class="wrap">
+    <div class="compare-banner">
+      <div class="compare-grid">
+        <div class="compare-card before"><h3>Before Peak</h3><div class="stat">+12%</div><p>Annual revenue growth<br>Fragmented efforts<br>No clear attribution</p></div>
+        <div class="vs-badge">VS</div>
+        <div class="compare-card after"><h3>After Peak</h3><div class="stat">+284%</div><p>Revenue lift in 6 months<br>Unified strategy<br>Full-funnel visibility</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS SECTION -->
+<section style="padding:4rem 0; background:var(--ink)">
+  <div class="wrap">
+    <div style="text-align:center; margin-bottom:2rem">
+      <span class="eyebrow" style="justify-content:center">The numbers</span>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">Results that speak</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="number" data-count="320" data-suffix="%">0%</div><div class="label">Average revenue growth</div><div class="trend">↑ +47% vs industry avg</div></div>
+      <div class="stat-card"><div class="number" data-count="180" data-prefix="$" data-suffix="M+">$0M+</div><div class="label">Client revenue influenced</div><div class="trend">Tracked &amp; attributed</div></div>
+      <div class="stat-card"><div class="number" data-count="98" data-suffix="%">0%</div><div class="label">Client retention rate</div><div class="trend">Average engagement: 2.4 years</div></div>
+      <div class="stat-card"><div class="number" data-count="47" data-suffix="%">0%</div><div class="label">Average CAC reduction</div><div class="trend">Efficiency at scale</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="padding:4rem 0">
+  <div class="wrap">
+    <div style="text-align:center; margin-bottom:2rem">
+      <span class="eyebrow" style="justify-content:center">How we partner</span>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">Engagements built for growth</h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card"><h3>Strategy Sprint</h3><div class="price">$4K<small>/ one-time</small></div><ul><li>2-week deep dive</li><li>Full market analysis</li><li>Revenue roadmap</li><li>30-day action plan</li></ul><a href="../index.html#contact" class="btn btn-outline" style="width:100%; justify-content:center">Book sprint →</a></div>
+      <div class="pricing-card feat"><h3>Growth Retainer</h3><div class="price">$9K<small>/ month</small></div><ul><li>Full strategy + execution</li><li>Multi-channel management</li><li>Weekly strategy sprints</li><li>Dedicated growth lead</li></ul><a href="../index.html#contact" class="btn btn-primary" style="width:100%; justify-content:center">Start growing →</a></div>
+      <div class="pricing-card"><h3>Fractional CMO</h3><div class="price">$20K<small>/ month</small></div><ul><li>Embedded leadership</li><li>Team management</li><li>Board-level strategy</li><li>Full accountability</li></ul><a href="../index.html#contact" class="btn btn-outline" style="width:100%; justify-content:center">Talk to us →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section style="padding:4rem 0; background:var(--ink)">
+  <div class="wrap">
+    <div style="text-align:center; margin-bottom:2rem">
+      <span class="eyebrow" style="justify-content:center">Common questions</span>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">Everything you need to know</h2>
+    </div>
+    <div class="faq-item"><div class="faq-question"><span>What's your typical engagement length?</span><span class="icon">+</span></div><div class="faq-answer"><p>Most clients start with a 3-month minimum to see meaningful results, then continue on a monthly retainer. Strategy Sprints are 2 weeks.</p></div></div>
+    <div class="faq-item"><div class="faq-question"><span>Do you work with early-stage startups?</span><span class="icon">+</span></div><div class="faq-answer"><p>Absolutely. We work with companies from pre-seed to Series C. Our engagement models scale with your stage and budget.</p></div></div>
+    <div class="faq-item"><div class="faq-question"><span>How do you measure success?</span><span class="icon">+</span></div><div class="faq-answer"><p>We tie everything to revenue. You'll get a real-time dashboard showing pipeline, CAC, ROAS, and attributed revenue — updated daily.</p></div></div>
+    <div class="faq-item"><div class="faq-question"><span>What makes you different from traditional agencies?</span><span class="icon">+</span></div><div class="faq-answer"><p>We don't sell campaigns. We build systems. Most agencies execute tactics. We engineer growth infrastructure that compounds over time.</p></div></div>
+    <div class="faq-item"><div class="faq-question"><span>Can you integrate with our existing team?</span><span class="icon">+</span></div><div class="faq-answer"><p>Yes. We work as an extension of your team — Slack, Zoom, project management tools. Full integration is standard.</p></div></div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section" id="contact">
+  <div class="wrap">
+    <h2>Ready to build a strategy that actually compounds?</h2>
+    <p style="margin:1rem auto; max-width:500px; opacity:.9">Book a free 45-minute strategy audit. No fluff. No obligation.</p>
+    <a href="../index.html#contact" class="btn btn-primary" style="background:#fff; color:var(--azure); margin-top:1rem">Claim your strategy audit →</a>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <!-- Brand -->
+      <div class="foot-brand">
+        <div class="logo">
+          <svg class="peak-mark" viewBox="0 0 100 100">
+            <path d="M60 20 L93 80 L42 80 Z" fill="#2563EB"/>
+            <path d="M40 28 L72 82 L8 82 Z" fill="#0891B2"/>
+            <path d="M40 28 L8 82" stroke="#fff" stroke-width="1.5" fill="none"/>
+          </svg>
+          PEAK PIONEERS
+        </div>
+        <p>We build AI-driven growth systems that scale ambitious businesses. Strategy, build, automation — engineered to compound.</p>
+        <div style="display:flex;gap:1rem;margin-top:1rem;">
+          <a href="#" aria-label="Instagram">Instagram</a>
+          <a href="#" aria-label="LinkedIn">LinkedIn</a>
+          <a href="#" aria-label="YouTube">YouTube</a>
+          <a href="#" aria-label="Twitter">Twitter</a>
+        </div>
+      </div>
+
+      <!-- Services -->
+      <div class="fcol">
+        <h5>Services</h5>
+        <a href="Ai-Automation.html">AI Automation</a>
+        <a href="Youtube.html">YouTube Automation</a>
+        <a href="app-development.html">Web &amp; App Dev</a>
+        <a href="organic-growth.html">SEO &amp; Organic</a>
+        <a href="Influencer Marketing.html">Marketing Strategy</a>
+      </div>
+
+      
+      <!-- Social media -->
+      <div class="fcol">
+        <h5>Resources</h5>
+        <a href="">Instagram</a>
+              </div>
+    </div>
+
+    <div class="foot-bot">
+      <span>&copy; 2026 Peak Pioneers Digital. All rights reserved.</span>
+      <span>
+        <a href="#">Privacy</a> · <a href="#">Terms</a> · 
+        <a href="mailto:hello@peakpioneers.io">hello@peakpioneers.io</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+(function(){
+  // Header scroll
+  var header = document.getElementById('header');
+  window.addEventListener('scroll', function(){ header.classList.toggle('scrolled', window.scrollY > 40); });
+  
+  // Mobile menu
+  var burger = document.getElementById('burger');
+  var mobileMenu = document.getElementById('mobileMenu');
+  if(burger && mobileMenu){
+    burger.addEventListener('click', function(){ mobileMenu.classList.toggle('open'); document.body.classList.toggle('lock'); });
+    mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ mobileMenu.classList.remove('open'); document.body.classList.remove('lock'); }); });
+  }
+  
+  // FAQ Accordion
+  var faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach(function(item){
+    var question = item.querySelector('.faq-question');
+    question.addEventListener('click', function(){
+      item.classList.toggle('open');
+    });
+  });
+  
+  // Animated counters
+  var counters = document.querySelectorAll('.number');
+  if(typeof ScrollTrigger !== 'undefined'){
+    counters.forEach(function(c){
+      var target = parseFloat(c.getAttribute('data-count')) || 0;
+      var suffix = c.getAttribute('data-suffix') || '';
+      var prefix = c.getAttribute('data-prefix') || '';
+      var obj = {v:0};
+      ScrollTrigger.create({
+        trigger: c,
+        start: 'top 90%',
+        once: true,
+        onEnter: function(){
+          gsap.to(obj, {v: target, duration: 2.2, ease: 'power2.out', onUpdate: function(){
+            c.innerHTML = prefix + Math.floor(obj.v) + suffix;
+          }});
+        }
+      });
+    });
+  } else {
+    counters.forEach(function(c){
+      var target = c.getAttribute('data-count') || 0;
+      var suffix = c.getAttribute('data-suffix') || '';
+      var prefix = c.getAttribute('data-prefix') || '';
+      c.innerHTML = prefix + target + suffix;
+    });
+  }
+  
+  // Three.js Hero Background
+  var heroCanvas = document.getElementById('hero-canvas');
+  if(heroCanvas && typeof THREE !== 'undefined'){
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 9;
+    var renderer = new THREE.WebGLRenderer({canvas: heroCanvas, alpha: true});
+    
+    function resizeHero(){
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resizeHero();
+    window.addEventListener('resize', resizeHero);
+    
+    // Torus knot
+    var geometry = new THREE.TorusKnotGeometry(2.2, 0.4, 200, 32, 3, 4);
+    var material = new THREE.MeshBasicMaterial({color: 0x2563EB, wireframe: true, transparent: true, opacity: 0.2});
+    var knot = new THREE.Mesh(geometry, material);
+    scene.add(knot);
+    
+    // Particles
+    var particles = new THREE.BufferGeometry();
+    var particleCount = 1200;
+    var positions = new Float32Array(particleCount * 3);
+    for(var i = 0; i < particleCount; i++){
+      var r = 4 + Math.random() * 3;
+      var theta = Math.random() * Math.PI * 2;
+      var phi = Math.acos(2 * Math.random() - 1);
+      positions[i*3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+      positions[i*3+2] = r * Math.cos(phi);
+    }
+    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    var particleMat = new THREE.PointsMaterial({color: 0xB8841F, size: 0.04, transparent: true, opacity: 0.5});
+    var particleSystem = new THREE.Points(particles, particleMat);
+    scene.add(particleSystem);
+    
+    function animateHero(){
+      requestAnimationFrame(animateHero);
+      knot.rotation.x += 0.005;
+      knot.rotation.y += 0.008;
+      particleSystem.rotation.y -= 0.002;
+      renderer.render(scene, camera);
+    }
+    animateHero();
+  }
+  
+  // Three.js Framework 3D Display
+  var threeCanvas = document.getElementById('three-canvas');
+  if(threeCanvas && typeof THREE !== 'undefined'){
+    var scene2 = new THREE.Scene();
+    var camera2 = new THREE.PerspectiveCamera(45, threeCanvas.clientWidth / threeCanvas.clientHeight, 0.1, 100);
+    camera2.position.z = 5;
+    var renderer2 = new THREE.WebGLRenderer({canvas: threeCanvas, alpha: true});
+    
+    function resizeThree(){
+      var w = threeCanvas.clientWidth;
+      var h = threeCanvas.clientHeight;
+      renderer2.setSize(w, h);
+      camera2.aspect = w / h;
+      camera2.updateProjectionMatrix();
+    }
+    resizeThree();
+    window.addEventListener('resize', resizeThree);
+    
+    // Pyramid
+    var pyramidGeo = new THREE.CylinderGeometry(0, 2, 3, 4);
+    var pyramidMat = new THREE.MeshBasicMaterial({color: 0x2563EB, wireframe: true, transparent: true, opacity: 0.7});
+    var pyramid = new THREE.Mesh(pyramidGeo, pyramidMat);
+    scene2.add(pyramid);
+    
+    // Orbiting spheres
+    var sphereMat = new THREE.MeshStandardMaterial({color: 0xB8841F, emissive: 0xB8841F, emissiveIntensity: 0.3});
+    var orbCount = 4;
+    var orbs = [];
+    for(var i = 0; i < orbCount; i++){
+      var sphere = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), sphereMat);
+      scene2.add(sphere);
+      orbs.push({mesh: sphere, angle: (Math.PI * 2 / orbCount) * i, radius: 2.5});
+    }
+    
+    // Lights
+    var ambientLight = new THREE.AmbientLight(0x404060);
+    scene2.add(ambientLight);
+    var light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(1, 2, 3);
+    scene2.add(light);
+    
+    var time = 0;
+    function animateThree(){
+      requestAnimationFrame(animateThree);
+      time += 0.01;
+      pyramid.rotation.y = time * 0.5;
+      pyramid.rotation.x = Math.sin(time * 0.3) * 0.2;
+      
+      orbs.forEach(function(orb, idx){
+        orb.angle += 0.01;
+        orb.mesh.position.x = Math.cos(orb.angle) * orb.radius;
+        orb.mesh.position.z = Math.sin(orb.angle) * orb.radius;
+        orb.mesh.position.y = Math.sin(time + idx) * 0.5;
+      });
+      
+      renderer2.render(scene2, camera2);
+    }
+    animateThree();
+  }
+  
+  // Scroll reveals
+  if(typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+    document.querySelectorAll('.service-card, .pillar, .pricing-card, .stat-card, .timeline-content, .compare-card').forEach(function(el){
+      gsap.set(el, {opacity: 0, y: 30});
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        onEnter: function(){ gsap.to(el, {opacity: 1, y: 0, duration: 0.8, ease: 'power2.out'}); }
+      });
+    });
+  } else {
+    document.querySelectorAll('.service-card, .pillar, .pricing-card, .stat-card, .timeline-content, .compare-card').forEach(function(el){
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+  }
+})();
+</script>
+</body>
+</html>

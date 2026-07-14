@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organic Growth — Peak Pioneers | 3D Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --obsidian: #EAEEF6;
+            --ink: #F2F5FB;
+            --surface: #FFFFFF;
+            --surface-2: #E9EEF6;
+            --line: rgba(12, 18, 34, 0.10);
+            --line-strong: rgba(12, 18, 34, 0.17);
+            --bone: #0C1222;
+            --bone-dim: #49506A;
+            --muted: #858DA3;
+            --azure: #2563EB;
+            --cyan: #0891B2;
+            --purple: #8B5CF6;
+            --gold: #F59E0B;
+            --emerald: #10B981;
+            --pink: #EC4899;
+            --glass: rgba(255, 255, 255, 0.66);
+            --display: 'Space Grotesk', sans-serif;
+            --giant: 'Archivo Black', sans-serif;
+            --body: 'Inter', sans-serif;
+            --mono: 'Space Mono', monospace;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: var(--obsidian);
+            color: var(--bone);
+            font-family: var(--body);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        ::selection {
+            background: var(--azure);
+            color: #fff;
+        }
+        .wrap {
+            width: min(1280px, 90vw);
+            margin-inline: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Fullscreen 3D Canvas */
+        #canvas-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(234, 238, 246, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--line);
+            transition: all 0.3s;
+        }
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 0;
+        }
+        .logo {
+            font-family: var(--giant);
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--bone);
+            text-decoration: none;
+        }
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--emerald), var(--azure));
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            display: inline-block;
+            animation: logoGlow 2s ease-in-out infinite;
+        }
+        @keyframes logoGlow {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 2px var(--emerald));
+            }
+            50% {
+                filter: drop-shadow(0 0 8px var(--emerald));
+            }
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .nav-links a {
+            color: var(--bone-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--emerald);
+        }
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: 0;
+            cursor: pointer;
+        }
+        .burger span {
+            width: 24px;
+            height: 2px;
+            background: var(--bone);
+            transition: 0.3s;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 100px;
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.4s var(--ease);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--emerald), var(--azure));
+            color: white;
+            border: none;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--line-strong);
+            color: var(--bone);
+        }
+        .btn-outline:hover {
+            border-color: var(--emerald);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: clamp(2.8rem, 8vw, 5.5rem);
+            font-family: var(--giant);
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, var(--emerald), var(--azure), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: textShimmer 3s ease-in-out infinite;
+        }
+        @keyframes textShimmer {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        .hero .lede {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            color: var(--bone-dim);
+            max-width: 50ch;
+            margin-top: 1.5rem;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            border-left: 2px solid var(--emerald);
+            padding-left: 1rem;
+            animation: fadeInUp 0.6s ease-out backwards;
+            animation-delay: calc(0.1s * var(--i, 1));
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-family: var(--display);
+            font-weight: 700;
+            color: var(--emerald);
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* 3D Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            perspective: 1000px;
+        }
+        .feature-card-3d {
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.6s var(--ease);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            border: 1px solid var(--line);
+            overflow: hidden;
+        }
+        .feature-card-3d:hover {
+            transform: translateZ(20px) rotateX(5deg) rotateY(5deg);
+            border-color: var(--emerald);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.12);
+        }
+        .feature-3d-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(37, 99, 235, 0.15));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            transform-style: preserve-3d;
+            transition: transform 0.4s;
+        }
+        .feature-card-3d:hover .feature-3d-icon {
+            transform: translateZ(15px) rotateY(10deg);
+        }
+        .feature-card-3d h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            transform-style: preserve-3d;
+        }
+        .feature-card-3d p {
+            color: var(--bone-dim);
+            font-size: 0.9rem;
+            transform-style: preserve-3d;
+        }
+        .feature-stats {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+        .feature-stats span {
+            color: var(--emerald);
+            font-weight: 700;
+        }
+
+        /* 3D Floating Stats */
+        .stats-3d-container {
+            background: linear-gradient(135deg, var(--surface), var(--surface-2));
+            border-radius: 48px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+        .floating-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .float-stat {
+            animation: float 3s ease-in-out infinite;
+        }
+        .float-stat:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .float-stat:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        .float-stat:nth-child(3) {
+            animation-delay: 1s;
+        }
+        .float-stat:nth-child(4) {
+            animation-delay: 1.5s;
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        .float-stat .value {
+            font-size: 3rem;
+            font-family: var(--display);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--emerald), var(--azure));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* =============== PROOF SHOWCASE (Replacing Videos) =============== */
+        .proof-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            perspective: 1000px;
+        }
+        .proof-card-3d {
+            background: var(--surface);
+            border-radius: 28px;
+            overflow: hidden;
+            transition: all 0.5s var(--ease);
+            transform-style: preserve-3d;
+            border: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+        }
+        .proof-card-3d:hover {
+            transform: translateZ(30px) rotateX(3deg);
+            border-color: var(--emerald);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.15);
+        }
+        .proof-image {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #0a0a0a;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.6s var(--ease);
+        }
+        .proof-card-3d:hover .proof-image {
+            transform: scale(1.04);
+        }
+        .proof-image .platform-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(4px);
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--bone);
+            border: 1px solid var(--line);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            z-index: 2;
+        }
+        .proof-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .proof-content .platform-tag {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--emerald);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+        .proof-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .proof-content p {
+            color: var(--bone-dim);
+            font-size: 0.9rem;
+            flex: 1;
+        }
+        .proof-result {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .proof-result .stat {
+            font-weight: 700;
+            color: var(--emerald);
+            font-size: 1.1rem;
+        }
+        .proof-result .watch-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--azure);
+            transition: gap 0.3s;
+            text-decoration: none;
+        }
+        .proof-card-3d:hover .watch-link {
+            gap: 0.8rem;
+        }
+        .watch-link .arrow {
+            transition: transform 0.3s;
+        }
+        .proof-card-3d:hover .watch-link .arrow {
+            transform: translateX(4px);
+        }
+
+        /* 3D Workflow Timeline */
+        .workflow-3d {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            perspective: 1000px;
+        }
+        .workflow-node {
+            flex: 1;
+            text-align: center;
+            padding: 2rem;
+            background: var(--surface);
+            border-radius: 28px;
+            border: 1px solid var(--line);
+            transition: all 0.4s;
+            transform-style: preserve-3d;
+            min-width: 140px;
+        }
+        .workflow-node:hover {
+            transform: translateZ(25px) rotateY(5deg);
+            border-color: var(--emerald);
+        }
+        .node-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--emerald), var(--azure));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin: 0 auto 1rem;
+            animation: pulse 2.5s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+        }
+        .workflow-node h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+        }
+        .workflow-node p {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            perspective: 1000px;
+        }
+        .pricing-3d-card {
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 2rem;
+            transition: all 0.5s;
+            transform-style: preserve-3d;
+            border: 1px solid var(--line);
+            position: relative;
+        }
+        .pricing-3d-card:hover {
+            transform: translateZ(30px) rotateX(3deg);
+            border-color: var(--emerald);
+        }
+        .pricing-3d-card.featured {
+            border-color: var(--emerald);
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.06), var(--surface));
+        }
+        .pricing-3d-card.featured::before {
+            content: "Most Popular";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--emerald), var(--azure));
+            color: white;
+            font-size: 0.65rem;
+            font-family: var(--mono);
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            letter-spacing: 0.1em;
+        }
+        .pricing-name {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--emerald);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        .pricing-price {
+            font-size: 2.5rem;
+            font-family: var(--display);
+            font-weight: 700;
+            margin: 1rem 0 0.5rem;
+        }
+        .pricing-price small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--muted);
+        }
+        .pricing-3d-card ul {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        .pricing-3d-card li {
+            padding: 0.4rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--bone-dim);
+        }
+        .pricing-3d-card li::before {
+            content: "✓";
+            color: var(--emerald);
+            font-weight: bold;
+        }
+        .pricing-3d-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 0;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-header .eyebrow {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--emerald);
+        }
+        .section-header h2 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-family: var(--display);
+            margin-top: 0.8rem;
+        }
+        .section-header p {
+            color: var(--bone-dim);
+            max-width: 50ch;
+            margin: 0.8rem auto 0;
+        }
+
+        /* CTA Section */
+        .cta-3d {
+            background: linear-gradient(135deg, var(--surface), var(--surface-2));
+            border-radius: 48px;
+            padding: 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+
+        footer {
+            border-top: 1px solid var(--line);
+            padding: 3rem 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            transform: translateY(-100%);
+            transition: transform 0.5s var(--ease);
+        }
+        .mobile-menu.open {
+            transform: translateY(0);
+        }
+        .mobile-menu a {
+            font-family: var(--display);
+            font-size: 2rem;
+            text-decoration: none;
+            color: var(--bone);
+            transition: color 0.3s;
+        }
+        .mobile-menu a:hover {
+            color: var(--emerald);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links,
+            .nav .btn {
+                display: none;
+            }
+            .burger {
+                display: flex;
+            }
+            .floating-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .workflow-3d {
+                flex-direction: column;
+            }
+            .proof-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 640px) {
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-3d"></canvas>
+
+    <div class="content">
+        <header id="header">
+            <div class="wrap nav">
+                <a href="#" class="logo"><span class="logo-mark"></span>PEAK PIONEERS</a>
+                <div class="nav-links">
+                    <a href="peak-pioneers (1).html">Home</a>
+                    <a href="#features">Capabilities</a>
+                    <a href="#work">Proof of Work</a>
+                    <a href="#workflow">Process</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <a href="#contact" class="btn btn-primary">Get Your Audit →</a>
+                <button class="burger" id="burger"><span></span><span></span><span></span></button>
+            </div>
+        </header>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="peak-pioneers (1).html">Home</a>
+            <a href="#features">Capabilities</a>
+            <a href="#work">Proof of Work</a>
+            <a href="#workflow">Process</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        <main>
+            <!-- Hero -->
+            <section class="hero">
+                <div class="wrap">
+                    <h1>
+                        Organic Growth<br>
+                        <span class="gradient-text">That Compounds</span>
+                    </h1>
+                    <p class="lede">
+                        Sustainable, data‑driven SEO & content systems that build authority, capture demand,
+                        and deliver traffic that compounds year over year.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item" style="--i:1"><div class="stat-number">320%</div><div class="stat-label">Avg. Organic Traffic Lift</div></div>
+                        <div class="stat-item" style="--i:2"><div class="stat-number">50K+</div><div class="stat-label">Keywords Ranking</div></div>
+                        <div class="stat-item" style="--i:3"><div class="stat-number">99.9%</div><div class="stat-label">Uptime & Page Speed</div></div>
+                    </div>
+                    <div class="cta-group">
+                        <a href="#contact" class="btn btn-primary">Get Your Free Audit →</a>
+                        <a href="#work" class="btn btn-outline">See Our Work</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3D Feature Cards -->
+            <section id="features">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">Core Capabilities</div>
+                        <h2>Six Organic Engines</h2>
+                        <p style="color: var(--bone-dim);">Hover over each card to see the 3D effect in action</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card-3d"><div class="feature-3d-icon">🔍</div><h3>SEO Audit & Strategy</h3><p>Deep technical audits and data‑driven roadmaps that uncover hidden growth opportunities.</p><div class="feature-stats"><span>↑ 120%</span> traffic potential</div></div>
+                        <div class="feature-card-3d"><div class="feature-3d-icon">✍️</div><h3>Content Marketing Engine</h3><p>AI‑powered topic research, brief generation, and content production that ranks.</p><div class="feature-stats"><span>↑ 85%</span> content efficiency</div></div>
+                        <div class="feature-card-3d"><div class="feature-3d-icon">🔗</div><h3>Authority Link Building</h3><p>White‑hat link acquisition from industry‑leading publications and niche editors.</p><div class="feature-stats"><span>↑ 65%</span> domain authority</div></div>
+                        <div class="feature-card-3d"><div class="feature-3d-icon">⚙️</div><h3>Technical SEO</h3><p>Core Web Vitals, site architecture, schema markup — the foundation of organic performance.</p><div class="feature-stats"><span>⬆ 95+</span> page speed score</div></div>
+                        <div class="feature-card-3d"><div class="feature-3d-icon">📈</div><h3>Data‑Driven Analytics</h3><p>Custom dashboards that connect organic performance directly to business outcomes.</p><div class="feature-stats"><span>24/7</span> live insights</div></div>
+                        <div class="feature-card-3d"><div class="feature-3d-icon">📍</div><h3>Local & Map SEO</h3><p>Google Business Profile optimization, local citations, and map pack dominance.</p><div class="feature-stats"><span>↑ 340%</span> local visibility</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3D Floating Stats -->
+            <section style="padding-top:0;">
+                <div class="wrap">
+                    <div class="stats-3d-container">
+                        <div class="floating-stats">
+                            <div class="float-stat"><div class="value">320%</div><div class="label">Traffic Growth Avg.</div></div>
+                            <div class="float-stat"><div class="value">50K+</div><div class="label">Keywords Ranked</div></div>
+                            <div class="float-stat"><div class="value">4.8x</div><div class="label">Organic ROAS</div></div>
+                            <div class="float-stat"><div class="value">99.9%</div><div class="label">Uptime</div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =============== PROOF OF WORK SHOWCASE =============== -->
+            <section id="work">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">Trusted by Industry Giants</div>
+                        <h2>Proven Results on Every Platform</h2>
+                        <p>Real data from real campaigns across the world's largest digital ecosystems.</p>
+                    </div>
+                    <div class="proof-grid">
+
+                        <!-- 1. Google -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=600&h=400&fit=crop');">
+                                <span class="platform-badge" style="color: #4285F4; border-color: #4285F4;">Google</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #4285F4;">Search Dominance</span>
+                                <h3>Google Ads & SEO</h3>
+                                <p>Drove 850K+ monthly organic visits through strategic content optimization and technical SEO.</p>
+                                <div class="proof-result">
+                                    <span class="stat">↑ 312% Traffic</span>
+                                   
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Facebook -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('Images/FBO.jpg');">
+                                <span class="platform-badge" style="color: #1877F2; border-color: #1877F2;">Facebook</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #1877F2;">Social Retargeting</span>
+                                <h3>Facebook Ads</h3>
+                                <p>Reduced CPL by 52% with AI-powered retargeting and dynamic creative optimization.</p>
+                                <div class="proof-result">
+                                    <span class="stat">↓ 52% CPL</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Instagram -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=600&h=400&fit=crop');">
+                                <span class="platform-badge" style="color: #E4405F; border-color: #E4405F;">Instagram</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #E4405F;">Visual Storytelling</span>
+                                <h3>Instagram Reach</h3>
+                                <p>Generated 2.4M reach for a fashion brand using creator partnerships and shoppable posts.</p>
+                                <div class="proof-result">
+                                    <span class="stat">↑ 2.4M Reach</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. TikTok -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('Images/TIKTOK ADs STRATEGY.jpg');">
+                                <span class="platform-badge" style="color: #010101; border-color: #010101;">TikTok</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #25F4EE;">Viral Strategy</span>
+                                <h3>TikTok Viral Campaign</h3>
+                                <p>Hit 4.2M views on a single campaign with UGC and trending audio integration.</p>
+                                <div class="proof-result">
+                                    <span class="stat">↑ 4.2M Views</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. YouTube -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=600&h=400&fit=crop');">
+                                <span class="platform-badge" style="color: #FF0000; border-color: #FF0000;">YouTube</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #FF0000;">Video SEO</span>
+                                <h3>YouTube Growth</h3>
+                                <p>Increased average watch time by 340% and gained 50K subscribers in 60 days.</p>
+                                <div class="proof-result">
+                                    <span class="stat">↑ 340% Watch Time</span>
+                                   
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6. LinkedIn -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=600&h=400&fit=crop');">
+                                <span class="platform-badge" style="color: #0A66C2; border-color: #0A66C2;">LinkedIn</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #0A66C2;">B2B Lead Gen</span>
+                                <h3>LinkedIn Outreach</h3>
+                                <p>Boosted lead gen CTR by 78% through account-based marketing and InMail sequences.</p>
+                                <div class="proof-result">
+                                    <span class="stat">↑ 78% CTR</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 7. Twitter/X -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('https://images.unsplash.com/photo-1611605698335-8b1569810432?w=600&h=400&fit=crop');">
+                                <span class="platform-badge" style="color: #000000; border-color: #000000;">X (Twitter)</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #1DA1F2;">Real-time Engagement</span>
+                                <h3>Twitter/X Amplification</h3>
+                                <p>Amplified brand mentions by 5x using trend-jacking and community engagement.</p>
+                                <div class="proof-result">
+                                    <span class="stat">↑ 5x Mentions</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 8. Pinterest -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('Images/Drive Evergreen Traffic with Stunning Pins & Boards!.jpg');">
+                                <span class="platform-badge" style="color: #E60023; border-color: #E60023;">Pinterest</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #E60023;">Visual Discovery</span>
+                                <h3>Pinterest SEO</h3>
+                                <p>Scaled visual search traffic by 210% with rich pins and keyword-optimized boards.</p>
+                                <div class="proof-result">
+                                    <span class="stat">↑ 210% Traffic</span>
+                                   
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9. Amazon -->
+                        <div class="proof-card-3d">
+                            <div class="proof-image" style="background-image: url('Images/home_amazon on TikTok.jpg');">
+                                <span class="platform-badge" style="color: #FF9900; border-color: #FF9900;">Amazon</span>
+                            </div>
+                            <div class="proof-content">
+                                <span class="platform-tag" style="color: #FF9900;">E-commerce SEO</span>
+                                <h3>Amazon Product Ranking</h3>
+                                <p>Ranked #1 for 45 high-value keywords, driving a 280% increase in organic sales.</p>
+                                <div class="proof-result">
+                                    <span class="stat">#1 Rank (45x)</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3D Workflow Timeline -->
+            <section id="workflow">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">Our Process</div>
+                        <h2>From Discovery to Dominance</h2>
+                        <p>A proven five‑phase approach that delivers sustainable organic growth.</p>
+                    </div>
+                    <div class="workflow-3d">
+                        <div class="workflow-node"><div class="node-number">1</div><h4>Audit</h4><p>Technical & competitive analysis</p></div>
+                        <div class="workflow-node"><div class="node-number">2</div><h4>Strategy</h4><p>Keyword & content roadmap</p></div>
+                        <div class="workflow-node"><div class="node-number">3</div><h4>Create</h4><p>Content production & optimization</p></div>
+                        <div class="workflow-node"><div class="node-number">4</div><h4>Build</h4><p>Links & authority acquisition</p></div>
+                        <div class="workflow-node"><div class="node-number">5</div><h4>Scale</h4><p>Continuous optimization & growth</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pricing with 3D Cards -->
+            <section id="pricing">
+                <div class="wrap">
+                    <div class="section-header">
+                        <div class="eyebrow">Investment</div>
+                        <h2>Organic Growth Packages</h2>
+                        <p>Flexible engagements designed for every stage of growth.</p>
+                    </div>
+                    <div class="pricing-grid">
+                        <div class="pricing-3d-card">
+                            <div class="pricing-name">Starter</div>
+                            <div class="pricing-price">$4K<small>/month</small></div>
+                            <ul>
+                                <li>Complete SEO audit</li>
+                                <li>Keyword & gap analysis</li>
+                                <li>On‑page optimization</li>
+                                <li>Monthly reporting</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-outline">Get Started →</a>
+                        </div>
+
+                        <div class="pricing-3d-card featured">
+                            <div class="pricing-name">Growth</div>
+                            <div class="pricing-price">$8K<small>/month</small></div>
+                            <ul>
+                                <li>Everything in Starter</li>
+                                <li>Content production engine</li>
+                                <li>Link building campaign</li>
+                                <li>Technical SEO fixes</li>
+                                <li>Bi‑weekly strategy calls</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-primary">Scale My Traffic →</a>
+                        </div>
+
+                        <div class="pricing-3d-card">
+                            <div class="pricing-name">Enterprise</div>
+                            <div class="pricing-price">$18K+<small>/month</small></div>
+                            <ul>
+                                <li>Everything in Growth</li>
+                                <li>Custom AI content models</li>
+                                <li>Dedicated SEO team</li>
+                                <li>International expansion</li>
+                                <li>24/7 priority support</li>
+                            </ul>
+                            <a href="#contact" class="btn btn-outline">Contact Sales →</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final CTA -->
+            <section id="contact">
+                <div class="wrap">
+                    <div class="cta-3d">
+                        <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem);">Ready to Build Your Organic Engine?</h2>
+                        <p style="color: var(--bone-dim); margin: 1rem auto; max-width: 50ch;">Book a free SEO audit. We'll analyze your site and show you exactly where to focus.</p>
+                        <a href="#" class="btn btn-primary" style="margin-top: 1rem;">Book Your Free Audit →</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="wrap">
+                <p>© 2026 Peak Pioneers — Organic Growth That Compounds</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+    </script>
+    <script>
+        (function() {
+            // ============================================
+            // 3D SCENE — Organic Growth Theme
+            // ============================================
+            const canvas = document.getElementById('canvas-3d');
+            if (canvas && typeof THREE !== 'undefined') {
+                const scene = new THREE.Scene();
+                scene.background = new THREE.Color(0xEAEEF6);
+                scene.fog = new THREE.FogExp2(0xEAEEF6, 0.007);
+
+                const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 1.8, 14);
+
+                const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                const mainGroup = new THREE.Group();
+                scene.add(mainGroup);
+
+                // ===== 1. Floating Bar Charts / Growth Elements =====
+                const barGroup = new THREE.Group();
+                const barColors = [0x10b981, 0x2563eb, 0x8b5cf6, 0xf59e0b];
+                for (let i = 0; i < 30; i++) {
+                    const height = 0.2 + Math.random() * 0.8;
+                    const geo = new THREE.BoxGeometry(0.08, height, 0.08);
+                    const mat = new THREE.MeshStandardMaterial({
+                        color: barColors[Math.floor(Math.random() * barColors.length)],
+                        metalness: 0.5,
+                        roughness: 0.3,
+                        emissive: 0x10b981,
+                        emissiveIntensity: 0.1
+                    });
+                    const bar = new THREE.Mesh(geo, mat);
+                    const radius = 2 + Math.random() * 4;
+                    const angle = Math.random() * Math.PI * 2;
+                    bar.position.set(
+                        Math.cos(angle) * radius,
+                        height / 2 - 0.5 + Math.random() * 1.5,
+                        Math.sin(angle) * radius - 1
+                    );
+                    bar.rotation.y = angle;
+                    bar.userData = { rotSpeed: 0.002 + Math.random() * 0.005 };
+                    barGroup.add(bar);
+                }
+                mainGroup.add(barGroup);
+
+                // ===== 2. Central SEO Compass / Dial =====
+                const compassGroup = new THREE.Group();
+                const ringMat = new THREE.MeshStandardMaterial({
+                    color: 0x10b981,
+                    metalness: 0.7,
+                    roughness: 0.2,
+                    emissive: 0x10b981,
+                    emissiveIntensity: 0.08
+                });
+                const ring = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.04, 32, 120), ringMat);
+                compassGroup.add(ring);
+                const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.03, 32, 100), ringMat);
+                ring2.rotation.x = Math.PI / 2;
+                compassGroup.add(ring2);
+                const needle = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.8, 6), ringMat);
+                needle.position.y = 0.4;
+                needle.rotation.x = 0.2;
+                compassGroup.add(needle);
+                const center = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), ringMat);
+                compassGroup.add(center);
+                compassGroup.position.set(0, 0.8, 0);
+                mainGroup.add(compassGroup);
+
+                // ===== 3. Floating Keywords / Text Particles =====
+                const textGroup = new THREE.Group();
+                const glyphs = ['SEO', 'TRAFFIC', 'RANK', 'GROWTH', 'AUDIT', 'CONTENT', 'LINKS', 'SCALE'];
+                for (let i = 0; i < 50; i++) {
+                    const geo = new THREE.BoxGeometry(0.02, 0.02, 0.02);
+                    const mat = new THREE.MeshStandardMaterial({
+                        color: 0x2563eb,
+                        emissive: 0x2563eb,
+                        emissiveIntensity: 0.1
+                    });
+                    const dot = new THREE.Mesh(geo, mat);
+                    const r = 2.5 + Math.random() * 3.5;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos(2 * Math.random() - 1);
+                    dot.position.set(
+                        r * Math.sin(phi) * Math.cos(theta),
+                        r * Math.sin(phi) * Math.sin(theta) * 0.6,
+                        r * Math.cos(phi) - 1
+                    );
+                    dot.userData = { floatSpeed: 0.2 + Math.random() * 0.3, phase: Math.random() * 6 };
+                    textGroup.add(dot);
+                }
+                mainGroup.add(textGroup);
+
+                // ===== 4. Particles =====
+                const pCount = 1200;
+                const pPos = new Float32Array(pCount * 3);
+                for (let i = 0; i < pCount; i++) {
+                    pPos[i * 3] = (Math.random() - 0.5) * 35;
+                    pPos[i * 3 + 1] = (Math.random() - 0.5) * 18;
+                    pPos[i * 3 + 2] = (Math.random() - 0.5) * 25 - 8;
+                }
+                const pGeo = new THREE.BufferGeometry();
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+                const pMat = new THREE.PointsMaterial({
+                    color: 0x10b981,
+                    size: 0.04,
+                    transparent: true,
+                    opacity: 0.3,
+                    blending: THREE.AdditiveBlending
+                });
+                const particles = new THREE.Points(pGeo, pMat);
+                scene.add(particles);
+
+                // Lights
+                const ambient = new THREE.AmbientLight(0x404060);
+                scene.add(ambient);
+                const key = new THREE.DirectionalLight(0xffffff, 1.2);
+                key.position.set(5, 8, 7);
+                scene.add(key);
+                const fill = new THREE.PointLight(0x10b981, 0.5);
+                fill.position.set(-3, 2, 4);
+                scene.add(fill);
+                const rim = new THREE.PointLight(0x2563eb, 0.4);
+                rim.position.set(0, 1, -6);
+                scene.add(rim);
+
+                let mouseX = 0,
+                    mouseY = 0;
+                let tX = 0,
+                    tY = 0;
+                window.addEventListener('mousemove', (e) => {
+                    mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+                    mouseY = (e.clientY / window.innerHeight - 0.5) * 0.3;
+                });
+
+                let time = 0;
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    time += 0.006;
+
+                    // Rotate bars
+                    barGroup.children.forEach(bar => {
+                        bar.rotation.y += bar.userData.rotSpeed;
+                    });
+                    barGroup.rotation.y = time * 0.04;
+
+                    // Rotate compass
+                    compassGroup.rotation.y = time * 0.3;
+                    compassGroup.rotation.x = Math.sin(time * 0.2) * 0.1;
+                    needle.rotation.z = Math.sin(time * 0.5) * 0.3;
+
+                    // Float particles
+                    textGroup.children.forEach(dot => {
+                        dot.position.y += Math.sin(time * dot.userData.floatSpeed + dot.userData.phase) *
+                            0.0006;
+                    });
+                    textGroup.rotation.y = time * 0.02;
+
+                    // Mouse follow
+                    tX += (mouseX - tX) * 0.04;
+                    tY += (-mouseY - tY) * 0.04;
+                    mainGroup.rotation.y = tX * 0.4;
+                    mainGroup.rotation.x = tY * 0.25;
+
+                    camera.position.x += (tX * 1.2 - camera.position.x) * 0.025;
+                    camera.position.y += (tY * 0.6 - camera.position.y) * 0.025;
+                    camera.lookAt(0, 0.6, 0);
+
+                    renderer.render(scene, camera);
+                }
+                animate();
+
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+
+            // ===== 3D Hover Effects for Cards =====
+            const cards = document.querySelectorAll('.feature-card-3d, .proof-card-3d, .pricing-3d-card, .workflow-node');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    card.style.transform =
+                        `perspective(1000px) translateZ(20px) rotateX(${y * 5}deg) rotateY(${x * 5}deg)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                });
+            });
+
+            // Mobile menu
+            const burger = document.getElementById('burger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (burger && mobileMenu) {
+                burger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+                mobileMenu.querySelectorAll('a').forEach(a => {
+                    a.addEventListener('click', () => mobileMenu.classList.remove('open'));
+                });
+            }
+
+            // Scroll header
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+            });
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
